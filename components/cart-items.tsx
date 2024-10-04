@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { urlForImage } from "@/sanity/lib/image";
-import { Clock, X } from "lucide-react";
+import { X } from "lucide-react";
 import { formatCurrencyString, useShoppingCart } from "use-shopping-cart";
 import { Product } from "use-shopping-cart/core";
 
@@ -96,12 +96,7 @@ export function CartItems() {
                   </Button>
                 </div>
               </div>
-            </div>
-
-            <p className="mt-4 flex space-x-2 text-sm">
-              <Clock className="h-5 w-5 shrink-0" aria-hidden="true" />
-              <span>Ships in 1 week</span>
-            </p>
+            </div>        
           </div>
         </li>
       ))}

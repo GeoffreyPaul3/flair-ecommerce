@@ -1,175 +1,146 @@
-import { Image } from "sanity"
+import { Image } from "sanity";
 
 interface InventoryProduct {
-  id: string
-  name: string
-  image: string
-  images: string[]
-  categories: string[]
-  sizes: string[]
-  colors: string[]
-  price: number
-  currency: string
-  description: string
-  sku: string
+  id: string;
+  name: string;
+  slug: string; 
+  images: Image[];
+  categories: string[];
+  availability: string;
+  validityPeriod: string;
+  description: string;
+  sku: string;
+  price: number;
+  currency: string;
 }
 
 export interface SanityProduct extends Omit<InventoryProduct, "images"> {
-  _id: string
-  _createdAt: Date
-  slug: string
-  images: Image[]
+  _id: string;
+  _createdAt: Date;
+  slug: string;
+  images: Image[];
 }
 
 export const inventory: InventoryProduct[] = [
+  // Amazon Gift Card
   {
-    id: "64da6006-a4bb-4555-af78-3467853eb75e",
-    sku: "canvas_tote_bag_1",
-    name: "Canvas Tote Bag",
-    description: `Meet your new favorite carry-on. Our supersized tote is crafted in durable waxed cotton canvas that's rugged and durable, ideal for hauling all of your stuff. This size takes you to and from the farmer's market, the gym or a weekend getaway.`,
-    price: 16800, // price in smallest currency unit (e.g. cent for USD)
-    image:
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/canvas-tote-bag-1.jpg",
+    id: "64da6006-a4bb-4555-af78-3467853eb761",
+    sku: "gift_card_amazon",
+    name: "Amazon Gift Card",
+    slug: "amazon-gift-card",
+    description: "Shop for millions of products worldwide on Amazon with the Amazon Gift Card. Whether it's electronics, books, or fashion, Amazon has it all. This gift card is accepted globally, making it a perfect gift for anyone, anywhere.",
+    price: 2500, // Price in cents
     images: [
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/canvas-tote-bag-1.jpg",
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/canvas-tote-bag-2.jpg",
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/canvas-tote-bag-3.jpg",
+      { _type: "image", asset: { _ref: "card1", _type: "reference" } }
     ],
-    sizes: ["one-size"],
-    categories: ["bags"],
-    colors: ["brown"],
+    categories: ["gift cards"],
+    availability: "in stock",
+    validityPeriod: "365 days",
     currency: "USD",
   },
+
+  // Shein Gift Card
   {
-    id: "8d1a33a5-5650-4bd7-bb70-ba4670090700",
-    sku: "khaki_tote_bag_1",
-    name: "Khaki Tote Bag",
-    description: `Meet your new favorite carry-on. Our supersized tote is crafted in durable waxed cotton canvas that's rugged and durable, ideal for hauling all of your stuff. This size takes you to and from the farmer's market, the gym or a weekend getaway.`,
-    price: 14500,
-    image:
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/khaki-tote-bag-1.jpg",
+    id: "64da6006-a4bb-4555-af78-3467853eb762",
+    sku: "gift_card_shein",
+    name: "Shein Gift Card",
+    slug: "shein-gift-card",
+    description: "Stay stylish with the Shein Gift Card, a perfect choice for fashion enthusiasts. Redeemable globally on Shein’s website, it offers a wide variety of trendy and affordable clothing, making shopping easy and accessible around the world.",
+    price: 5000, // Price in cents
     images: [
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/khaki-tote-bag-1.jpg",
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/khaki-tote-bag-2.jpg",
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/khaki-tote-bag-3.jpg",
+      { _type: "image", asset: { _ref: "card2", _type: "reference" } }
     ],
-    sizes: ["one-size"],
-    categories: ["bags"],
-    colors: ["blue"],
+    categories: ["gift cards"],
+    availability: "in stock",
+    validityPeriod: "365 days",
     currency: "USD",
   },
+
+  // Apple Store Gift Card
   {
-    id: "e882fe48-253c-40fb-8155-51b47b063c1a",
-    sku: "braided_leather_belt_1",
-    name: "Braided Leather Belt",
-    description: `These handsome leather belts are guaranteed to pull together any outfit. They're made of vegetable-tanned Italian leather, which means they have natural highs and lows of color and will look even better over time.`,
-    price: 4999,
-    image:
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/braided-leather-belt.jpg",
+    id: "64da6006-a4bb-4555-af78-3467853eb763",
+    sku: "gift_card_apple",
+    name: "Apple Store Gift Card",
+    slug: "apple-store-gift-card",
+    description: "Unlock the world of Apple products with the Apple Store Gift Card. Whether it’s the latest iPhone, iPad, or MacBook, this gift card can be used globally in Apple Stores and online for a wide range of products and accessories.",
+    price: 10000, // Price in cents
     images: [
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/braided-leather-belt.jpg",
+      { _type: "image", asset: { _ref: "card3", _type: "reference" } }
     ],
-    sizes: ["s", "m", "l", "xl"],
-    categories: ["belts"],
-    colors: ["brown"],
+    categories: ["gift cards"],
+    availability: "in stock",
+    validityPeriod: "365 days",
     currency: "USD",
   },
+
+  // eBay Gift Card
   {
-    id: "6853a582-fc95-44af-9dac-dffbc694b47d",
-    sku: "woolblend_suit_belt_1",
-    name: "Wool-Blend Suit Belt",
-    description: `This handsome belt will pull together any outfit. The strong materials will take on your wear patterns and look even better over time.`,
-    price: 5599,
-    image:
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/woolblend-suit-belt-1.jpg",
+    id: "64da6006-a4bb-4555-af78-3467853eb764",
+    sku: "gift_card_ebay",
+    name: "eBay Gift Card",
+    slug: "ebay-gift-card",
+    description: "Discover rare finds and great deals with the eBay Gift Card. Redeemable worldwide, it allows you to bid or buy from a massive range of categories, from fashion to electronics. Perfect for the global shopper looking for variety.",
+    price: 5000, // Price in cents
     images: [
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/woolblend-suit-belt-1.jpg",
+      { _type: "image", asset: { _ref: "card4", _type: "reference" } }
     ],
-    sizes: ["s", "m", "l", "xl"],
-    categories: ["belts"],
-    colors: ["black"],
+    categories: ["gift cards"],
+    availability: "in stock",
+    validityPeriod: "365 days",
     currency: "USD",
   },
+
+  // Etsy Gift Card
   {
-    id: "b5980fb9-142b-4e0b-9683-daac07827e0a",
-    sku: "wool_scarf_1",
-    name: "Wool Scarf",
-    description: `Crafted in the finest English wool from the Abraham Moon mill (established in 1837), this scarf is an elegant and cozy addition to your winter wardrobe.`,
-    price: 6199,
-    image:
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/wool-scarf-1.jpg",
+    id: "64da6006-a4bb-4555-af78-3467853eb765",
+    sku: "gift_card_etsy",
+    name: "Etsy Gift Card",
+    slug: "etsy-gift-card",
+    description: "Explore unique and handcrafted goods with the Etsy Gift Card. Support independent creators and small businesses globally, offering custom-made items, vintage goods, and much more. Available to use worldwide.",
+    price: 3000, // Price in cents
     images: [
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/wool-scarf-1.jpg",
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/wool-scarf-2.jpg",
+      { _type: "image", asset: { _ref: "card5", _type: "reference" } }
     ],
-    sizes: ["one-size"],
-    categories: ["scarves"],
-    colors: ["green"],
+    categories: ["gift cards"],
+    availability: "in stock",
+    validityPeriod: "365 days",
     currency: "USD",
   },
+
+  // AliExpress Gift Card
   {
-    id: "743b3855-6487-4d52-80fc-bcb8ca4fa74b",
-    sku: "leather_gloves_1",
-    name: "Leather Gloves",
-    description: `The smartest winter accessory. . . These 100 percent cashmere-lined gloves feature tech-friendly fingertips, so you can use your smartphone without getting frostbite.`,
-    price: 9800,
-    image:
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/leather-gloves-1.jpg",
+    id: "64da6006-a4bb-4555-af78-3467853eb766",
+    sku: "gift_card_aliexpress",
+    name: "AliExpress Gift Card",
+    slug: "aliexpress-gift-card",
+    description: "Enjoy shopping on one of the world’s largest marketplaces with the AliExpress Gift Card. With millions of products at unbeatable prices, this gift card is redeemable globally, making it a fantastic option for international shoppers.",
+    price: 1500, // Price in cents
     images: [
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/leather-gloves-1.jpg",
+      { _type: "image", asset: { _ref: "card6", _type: "reference" } }
     ],
-    sizes: ["s", "m", "l", "xl"],
-    categories: ["gloves"],
-    colors: ["brown"],
+    categories: ["gift cards"],
+    availability: "in stock",
+    validityPeriod: "365 days",
     currency: "USD",
   },
+
+  // Spotify Gift Card
   {
-    id: "83ea928a-d834-4c6d-a588-4c93ec2de3c0",
-    sku: "down_mittens_1",
-    name: "Down Mittens",
-    description: `Founded in Japan and now based in the U.S., Snow Peak has been making premium outdoor gear inspired by the mountainous region of Niigata, Japan, since 1958. Crafted in durable materials, these mittens are insulated with duckdown to keep your hands warm no matter through which polar vortex your day takes you.`,
-    price: 13999,
-    image:
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/down-mittens-1.jpg",
+    id: "64da6006-a4bb-4555-af78-3467853eb767",
+    sku: "gift_card_spotify",
+    name: "Spotify Gift Card",
+    slug: "spotify-gift-card",
+    description: "Unlock millions of songs, podcasts, and playlists with the Spotify Gift Card. This card works globally, providing premium access to Spotify’s ad-free music streaming, no matter where you are in the world.",
+    price: 4000, // Price in cents
     images: [
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/down-mittens-1.jpg",
+      { _type: "image", asset: { _ref: "card7", _type: "reference" } }
     ],
-    sizes: ["s", "m", "l", "xl"],
-    categories: ["gloves"],
-    colors: ["black"],
+    categories: ["gift cards"],
+    availability: "in stock",
+    validityPeriod: "365 days",
     currency: "USD",
-  },
-  {
-    id: "c5ef468d-d49e-4aa5-be5b-41f34af40b19",
-    sku: "brooks_sunglasses_1",
-    name: "Brooks Sunglasses",
-    description: `These are timeless sunglasses that are designed in California and handmade in Japan by master craftsmen. The Brooks frames are made with a keyhole bridge, one of the many details the brand includes in their construction.`,
-    price: 42000,
-    image:
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/brooks-sunglasses-1.jpg",
-    images: [
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/brooks-sunglasses-1.jpg",
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/brooks-sunglasses-2.jpg",
-    ],
-    sizes: ["one-size"],
-    categories: ["sunglasses"],
-    colors: ["yellow"],
-    currency: "USD",
-  },
-  {
-    id: "dd27c79d-97c3-47bb-9172-4ea74b096f6f",
-    sku: "dock_sunglasses_1",
-    name: "Dock Sunglasses",
-    description: `Our latest collection of handcrafted sunglasses features details like UV-protective lenses in shades specifically chosen to complement each frame, and all at a price that won't break the bank. We made these sunglasses with vintage-inspired acetate frames and a keyhole bridge.`,
-    price: 5599,
-    image:
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/dock-sunglasses-1.jpg",
-    images: [
-      "https://fullstackdotso.nyc3.cdn.digitaloceanspaces.com/dock-sunglasses-1.jpg",
-    ],
-    sizes: ["one-size"],
-    categories: ["sunglasses"],
-    colors: ["black"],
-    currency: "USD",
-  },
-]
+  }
+  
+  // Additional gift cards can be added following this structure
+];
+

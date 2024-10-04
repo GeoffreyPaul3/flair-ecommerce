@@ -31,25 +31,33 @@ export const product = defineType({
       of: [{ type: "string" }],
     },
     {
-      name: "sizes",
-      title: "Sizes",
-      type: "array",
-      of: [{ type: "string" }],
+      name: "availability",
+      title: "Availability",
+      type: "string",
+      options: {
+        list: [
+          { title: "In Stock", value: "inStock" },
+          { title: "Out of Stock", value: "outOfStock" },
+          { title: "Limited", value: "limited" },
+        ],
+      },
+      description: "Availability status of the product.",
     },
     {
-      name: "colors",
-      title: "Colors",
-      type: "array",
-      of: [{ type: "string" }],
+      name: "validityPeriod",
+      title: "Validity Period",
+      type: "string",
+      description:
+        "Duration for which the product or offer is valid, e.g., '6 months', '1 year'.",
     },
     {
       name: "description",
       title: "Description",
-      type: "string",
+      type: "text",
     },
     {
       name: "sku",
-      title: "Sku",
+      title: "SKU",
       type: "string",
     },
     {

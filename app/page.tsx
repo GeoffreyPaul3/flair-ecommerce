@@ -2,7 +2,6 @@ import { client } from "@/sanity/lib/client"
 import { groq } from "next-sanity"
 
 import { SanityProduct } from "@/config/inventory"
-import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { ProductFilters } from "@/components/product-filters"
 import { ProductGrid } from "@/components/product-grid"
@@ -51,11 +50,12 @@ export default async function Page({ searchParams }: Props) {
   return (
     <div>
       <div className="px-4 pt-20 text-center">
-        <h1 className="text-4xl font-extrabold tracking-normal">
-          {siteConfig.name}
+      <h1 className="text-4xl font-extrabold tracking-normal">
+          Empowering Your Digital Gifting Experience
         </h1>
         <p className="mx-auto mt-4 max-w-3xl text-base">
-          {siteConfig.description}
+          Your one-stop digital gift card marketplace. Explore a wide range of gift cards 
+          and find the perfect one for yourself or a loved one. Fast, easy, and secure.
         </p>
       </div>
       <div>
