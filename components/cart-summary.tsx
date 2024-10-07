@@ -1,94 +1,61 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { Loader2 } from "lucide-react";
-import { formatCurrencyString, useShoppingCart } from "use-shopping-cart";
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
+import { Loader2 } from "lucide-react"
+import { formatCurrencyString, useShoppingCart } from "use-shopping-cart"
+
+import { Button } from "@/components/ui/button"
 
 export function CartSummary() {
   const {
     formattedTotalPrice,
     totalPrice,
+    cartDetails,
     cartCount,
-  } = useShoppingCart();
+  } = useShoppingCart()
+  const [isLoading, setIsLoading] = useState(false)
+  const isDisabled = isLoading || cartCount! === 0
+  const shippingAmount = cartCount! > 0 ? 500 : 0
+  const totalAmount = totalPrice! + shippingAmount
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const isDisabled = isLoading || cartCount === 0;
-  const shippingAmount = cartCount > 0 ? 500 : 0;
-  const totalAmount = totalPrice + shippingAmount;
-
-  // Add the PayChangu popup script only once when the component mounts
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !document.getElementById('paychangu-script')) {
-      const script = document.createElement('script');
-      script.src = 'https://in.paychangu.com/js/popup.js';
-      script.id = 'paychangu-script';
-      document.head.appendChild(script);
-
-      // Cleanup function to remove the script when the component unmounts
-      return () => {
-        const existingScript = document.getElementById('paychangu-script');
-        if (existingScript) {
-          document.head.removeChild(existingScript);
-        }
-      };
-    }
-  }, []); // The empty dependency array ensures this runs only once
-
-  // Function to initiate PayChangu Payment
-  const onCheckout = async () => {
+  async function onCheckout() {
     setIsLoading(true);
-    setError(null); // Reset error state
-
-    const payChanguKey = process.env.NEXT_PUBLIC_PAYCHANGU_KEY;
-    if (!payChanguKey) {
-      console.error("PayChangu public key is missing.");
-      setError("Payment configuration is incorrect.");
-      setIsLoading(false);
-      return;
-    }
-
+    
     try {
-      await PaychanguCheckout({
-        public_key: payChanguKey,
-        tx_ref: Math.floor(Math.random() * 1000000000).toString(),
-        amount: totalAmount,
-        currency: "USD",
-        callback_url: `${window.location.origin}/api/paychangu-callback`,
-        return_url: `${window.location.origin}/success`, 
-        customer: {
-          email: "customer@example.com", // Replace with dynamic user data
-          first_name: "John", // Replace with dynamic user data
-          last_name: "Doe" // Replace with dynamic user data
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        customization: {
-          title: "Order Payment",
-          description: "Complete your order"
-        },
-        meta: {
-          order_id: "12345", // Example metadata for tracking
-          note: "Order payment"
-        }
+        body: JSON.stringify(cartDetails),
       });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to fetch. Status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+  
+      if (data.url) {
+        // Redirect to the PayChangu payment page
+        window.location.href = data.url;
+      } else {
+        console.error("Failed to initiate payment:", data.message);
+      }
     } catch (error) {
-      console.error("Payment initiation failed:", error);
-      setError("Payment initiation failed. Please try again.");
+      console.error("Checkout error:", error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
+  
 
   return (
     <section
       aria-labelledby="summary-heading"
       className="mt-16 rounded-lg border-2 border-gray-200 bg-gray-50 px-4 py-6 shadow-md dark:border-gray-900 dark:bg-black sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
     >
-      <h2 id="summary-heading" className="text-lg font-medium">
-        Order summary
-      </h2>
-
-      {error && <div className="text-red-500">{error}</div>} {/* Display error message */}
+      <h2 id="summary-heading" className="text-lg font-medium">Order summary</h2>
 
       <dl className="mt-6 space-y-4">
         <div className="flex items-center justify-between">
@@ -106,9 +73,9 @@ export function CartSummary() {
       <div className="mt-6">
         <Button onClick={onCheckout} className="w-full" disabled={isDisabled}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isLoading ? "Processing..." : "Pay with PayChangu"}
+          {isLoading ? "Loading..." : "Checkout"}
         </Button>
       </div>
     </section>
-  );
+  )
 }

@@ -1,57 +1,68 @@
-import { NextResponse } from "next/server";
-import { validateCartItems } from "use-shopping-cart/utilities";
-import { inventory } from "@/config/inventory";
-import { initiatePayChanguPayment } from "@/lib/paychangu";
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
+// Define the structure of the cart item
+interface CartItem {
+  price: number;
+  quantity: number;
+}
+
+// Utility function to generate a random transaction reference
+const generateTxRef = () => `TX-${Math.floor(Math.random() * 10000000000)}`;
+
+// Named export for the POST method
+export async function POST(req: NextRequest) {
   try {
-    const cartDetails = await request.json();
-    const origin = request.headers.get("origin") || "http://localhost:3000";
+    const cartDetails: Record<string, CartItem> = await req.json(); // Use req.json() for parsing the body
+    const tx_ref = generateTxRef();
 
-    // Validate the cart and calculate total amount
-    const lineItems = validateCartItems(inventory, cartDetails);
-    const totalAmount = lineItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    // Calculate total amount from cart details with proper typing
+    const amount = Object.values(cartDetails).reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0 as number); // Ensure the initial total is a number
 
-    // Ensure total amount is positive
-    if (totalAmount <= 0) {
-      return NextResponse.json({ error: "Total amount must be greater than zero." }, { status: 400 });
+    // Ensure amount is positive
+    if (amount <= 0) {
+      return NextResponse.json({ message: 'Invalid amount' }, { status: 400 });
     }
 
-    // Ensure all necessary customer details are present
-    if (!cartDetails.firstName || !cartDetails.email) {
-      return NextResponse.json({ error: "Missing customer information" }, { status: 400 });
-    }
-
-    // Create a unique transaction reference
-    const txRef = `tx_${Math.random().toString(36).substring(2, 15)}`;
-
-    // Prepare payment payload for PayChangu
-    const paymentPayload = {
-      amount: totalAmount.toString(),  // PayChangu expects the amount as a string
-      currency: "USD",  // Or "MWK" based on your preference
-      tx_ref: txRef,  // Unique transaction reference
-      first_name: cartDetails.firstName,  // Customer first name
-      last_name: cartDetails.lastName || "",  // Optional customer last name
-      callback_url: `${origin}/api/paychangu-callback?tx_ref=${txRef}`,  // URL to handle IPN callbacks from PayChangu
-      return_url: `${origin}/cart`,  // URL to redirect users in case of cancellation
-      email: cartDetails.email,  // Customer email for transaction confirmation
+    // Prepare request body for PayChangu API
+    const paymentData = {
+      amount,
+      currency: "MWK", // or your desired currency
+      email: "customer@example.com", // replace with actual customer email
+      first_name: "John", // replace with actual first name
+      last_name: "Doe", // replace with actual last name
+      callback_url: `${process.env.NEXT_PUBLIC_CALLBACK_URL}/success?tx_ref=${tx_ref}`,
+      return_url: `${process.env.NEXT_PUBLIC_RETURN_URL}/payment-failed`,
+      tx_ref,
+      customization: {
+        title: "Order Payment",
+        description: "Payment for items in cart",
+      },
     };
 
-    // Initiate payment via PayChangu
-    const payChanguResponse = await initiatePayChanguPayment(paymentPayload);
+    // Send the payment request to PayChangu
+    const response = await fetch("https://api.paychangu.com/payment", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${process.env.PAYCHANGU_SECRET_KEY}`, // Use secure PayChangu secret key
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paymentData),
+    });
 
-    if (payChanguResponse.status === 200) {
-      // Redirect to success page with the transaction reference
-      return NextResponse.json({
-        success: true,
-        redirectUrl: `${origin}/success?tx_ref=${txRef}`,
-      });
+    const data = await response.json();
+
+    // Handle success and error responses from PayChangu
+    if (response.ok && data.status === "success") {
+      return NextResponse.json({ url: data.data.checkout_url });
     } else {
-      // Handle error returned by PayChangu
-      return NextResponse.json({ error: "Payment initiation failed: " + payChanguResponse.error }, { status: 400 });
+      console.error("PayChangu error response:", data);
+      return NextResponse.json({ message: data.message || 'Payment failed' }, { status: 400 });
     }
-  } catch (error: any) {
-    console.error("Payment initiation error:", error);
-    return NextResponse.json({ error: "Something went wrong with the payment." }, { status: 500 });
+  } catch (error) {
+    console.error("Error creating PayChangu transaction:", error);
+    return NextResponse.json({ message: "Server error. Please try again later." }, { status: 500 });
   }
 }
