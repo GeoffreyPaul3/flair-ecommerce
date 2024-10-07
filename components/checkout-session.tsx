@@ -2,18 +2,22 @@
 
 import { useEffect } from "react"
 import { CheckCheck, XCircle } from "lucide-react"
-import Stripe from "stripe"
 import { useShoppingCart } from "use-shopping-cart"
 
-interface Props {
-  customerDetails : Stripe.Checkout.Session.CustomerDetails | null
+interface CustomerDetails {
+  name: string
+  email: string
 }
 
-export function CheckoutSession({ customerDetails}: Props) {
+interface Props {
+  customerDetails: CustomerDetails | null
+}
+
+export function CheckoutSession({ customerDetails }: Props) {
   const { clearCart } = useShoppingCart()
 
   useEffect(() => {
-    if(customerDetails) {
+    if (customerDetails) {
       clearCart()
     }
   }, [clearCart, customerDetails])
@@ -39,7 +43,7 @@ export function CheckoutSession({ customerDetails}: Props) {
         Thank you, <span className="font-extrabold">{customerDetails.name}</span>!
       </h3>
       <p className="mt-8">
-        Check your purchase email{" "}
+        Check your email{" "}
         <span className="mx-1 font-extrabold text-indigo-500">{customerDetails.email}</span> for
         your invoice.
       </p>
