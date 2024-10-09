@@ -15,8 +15,7 @@ export function CartSummary() {
   } = useShoppingCart()
   const [isLoading, setIsLoading] = useState(false)
   const isDisabled = isLoading || cartCount! === 0
-  const shippingAmount = cartCount! > 0 ? 500 : 0
-  const totalAmount = totalPrice! + shippingAmount
+  const totalAmount = totalPrice! 
 
   async function onCheckout() {
     setIsLoading(true);
@@ -65,7 +64,7 @@ export function CartSummary() {
         <div className="flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-600">
           <dt className="text-base font-medium">Order total</dt>
           <dd className="text-base font-medium">
-            {formatCurrencyString({ value: totalAmount, currency: "USD" })}
+            {formatCurrencyString({ value: totalAmount, currency: "MWK" })}
           </dd>
         </div>
       </dl>
