@@ -8,6 +8,7 @@ import { Providers } from "@/components/providers"
 import { SiteBlob } from "@/components/site-blob"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
+import { ClerkProvider } from "@clerk/nextjs"
 
 export const metadata: Metadata = {
   title: siteConfig.name,
@@ -24,6 +25,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
+     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <head />
         <body
@@ -42,6 +44,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </Providers>
         </body>
       </html>
+      </ClerkProvider>
     </>
   )
 }

@@ -20,21 +20,33 @@ async function getOrderDetails(tx_ref: string): Promise<Order | null> {
 
   const params = { tx_ref };
 
-  const order: Order | null = await client.fetch(query, params);
-  return order;
+  try {
+    const order: Order | null = await client.fetch(query, params);
+    return order;
+  } catch (error) {
+    console.error("Sanity query failed:", error);
+    throw new Error("Failed to fetch order details from Sanity");
+  }
 }
 
-// Define the GET method
+// Define the GET method to handle fetching order details
 export async function GET(req: NextRequest, { params }: { params: { tx_ref: string } }) {
   const { tx_ref } = params;
 
   try {
+    // Check if transaction reference is present
+    if (!tx_ref) {
+      return NextResponse.json({ message: "Transaction reference is missing" }, { status: 400 });
+    }
+
+    // Fetch the order details from Sanity
     const orderDetails = await getOrderDetails(tx_ref);
 
     if (!orderDetails) {
       return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
 
+    // Return the order details as JSON
     return NextResponse.json(orderDetails);
   } catch (error) {
     console.error("Error fetching order details:", error);

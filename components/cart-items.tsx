@@ -40,7 +40,6 @@ export function CartItems() {
             {product.images && product.images[0] ? (
               <Image
                 placeholder="blur"
-                blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(200, 200))}`}
                 src={urlForImage(product.images[0]).url()}
                 alt={product.name}
                 width={200}

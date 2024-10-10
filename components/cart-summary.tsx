@@ -1,25 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Loader2 } from "lucide-react"
-import { formatCurrencyString, useShoppingCart } from "use-shopping-cart"
-
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { formatCurrencyString, useShoppingCart } from "use-shopping-cart";
+import { Button } from "@/components/ui/button";
+import Script from "next/script"; // Import Next.js Script component
 
 export function CartSummary() {
-  const {
-    formattedTotalPrice,
-    totalPrice,
-    cartDetails,
-    cartCount,
-  } = useShoppingCart()
-  const [isLoading, setIsLoading] = useState(false)
-  const isDisabled = isLoading || cartCount! === 0
-  const totalAmount = totalPrice! 
+  const { formattedTotalPrice, totalPrice, cartDetails, cartCount } =
+    useShoppingCart();
+  const [isLoading, setIsLoading] = useState(false);
+  const isDisabled = isLoading || cartCount! === 0;
+  const totalAmount = totalPrice!;
 
   async function onCheckout() {
     setIsLoading(true);
-    
+
     try {
       const response = await fetch("/api/checkout", {
         method: "POST",
@@ -28,13 +24,13 @@ export function CartSummary() {
         },
         body: JSON.stringify(cartDetails),
       });
-  
+
       if (!response.ok) {
         throw new Error(`Failed to fetch. Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       if (data.url) {
         // Redirect to the PayChangu payment page
         window.location.href = data.url;
@@ -47,7 +43,6 @@ export function CartSummary() {
       setIsLoading(false);
     }
   }
-  
 
   return (
     <section
@@ -75,6 +70,12 @@ export function CartSummary() {
           {isLoading ? "Loading..." : "Checkout"}
         </Button>
       </div>
+
+      {/* PayChangu Script */}
+      <Script
+        src="https://in.paychangu.com/js/popup.js"
+        strategy="afterInteractive" 
+      />
     </section>
-  )
+  );
 }
