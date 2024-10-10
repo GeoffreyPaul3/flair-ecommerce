@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { MainNav } from "@/components/main-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { UserButton } from "@clerk/nextjs"
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -57,6 +58,7 @@ export function SiteHeader() {
               </Button>
             </Link>
           )}
+          <UserButton />
         </div>
       </div>
     </header>

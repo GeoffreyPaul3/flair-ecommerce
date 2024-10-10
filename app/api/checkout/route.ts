@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { clerkClient, getAuth } from "@clerk/nextjs/server"
 
-// Import Clerk's client
-
 interface CartItem {
-  price: number
+  price: number // Ensure this is already in MWK (integer)
   quantity: number
 }
 
-const generateTxRef = () => `TX-${Math.floor(Math.random() * 10000000000)}`
+const generateTxRef = () => `TX-${Math.floor(Math.random() * 1000000000) + 1}`
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,12 +27,20 @@ export async function POST(req: NextRequest) {
     const tx_ref = generateTxRef()
 
     // Calculate total amount from cart details
-    const amount = Object.values(cartDetails).reduce((total, item) => {
-      return total + item.price * item.quantity
+    const amountInMWK = Object.values(cartDetails).reduce((total, item) => {
+      // Ensure item.price is already in MWK without decimal conversions
+      return total + Math.round(item.price) * item.quantity // Round to ensure it's an integer
     }, 0)
 
-    // Ensure the amount is positive
-    if (amount <= 0) {
+    // Convert amount to the smallest unit (MWK cents)
+    const amount = amountInMWK * 100 // Multiply by 100 to convert to cents
+
+    // Log the calculated amount for debugging
+    console.log("Calculated amount for PayChangu:", amount)
+
+    // Ensure the amount is positive and does not exceed PayChangu's limit
+    if (amount <= 0 || amount > 178400000) {
+      // Update the limit to account for cents
       return NextResponse.json({ message: "Invalid amount" }, { status: 400 })
     }
 
