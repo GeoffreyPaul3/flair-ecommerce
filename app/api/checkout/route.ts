@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     const paymentData = {
       amount,
       currency: "MWK",
-      email: user.emailAddresses[0]?.emailAddress || "noemail@example.com", // Use real customer email
+      email: user.emailAddresses[0]?.emailAddress || "email@example.com", // Use real customer email
       first_name: user.firstName || "N/A", // Use real customer first name
       last_name: user.lastName || "N/A", // Use real customer last name
       callback_url: `${process.env.NEXT_PUBLIC_CALLBACK_URL}/success?tx_ref=${tx_ref}`,
@@ -73,7 +73,6 @@ export async function POST(req: NextRequest) {
 
     const data = await response.json()
 
-    // Handle success and error responses from PayChangu
     if (response.ok && data.status === "success") {
       return NextResponse.json({ url: data.data.checkout_url })
     } else {
